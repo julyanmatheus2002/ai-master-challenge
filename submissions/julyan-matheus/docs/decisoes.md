@@ -27,3 +27,9 @@ Decisão 5: Ajustes propostos pelo Claude Code na spec (aceitos)
 - Bloco "Hoje" ordenado só por valor esperado (score × valor contava chance duas vezes erro meu na spec)
 - Momentum em degraus fixos (0/14/30/60/90/120) em vez de por dia
 Origem: IA apontou, eu avaliei e aceitei os 4. Nenhum muda a lógica das hipóteses.
+
+
+Decisão 6: Score honesto + etiqueta relativa
+Score fica na escala real (62–78). Cada deal ganha etiqueta "Top / Meio / Fundo do seu Focar" pela posição entre os deals do vendedor.
+Motivo: esticar pra 0–100 faria um deal de 62% parecer zero. O vendedor lê o número como chance real.
+Origem: IA apontou a compressão, ofereceu esticar visualmente, eu recusei.
