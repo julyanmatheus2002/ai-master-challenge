@@ -10,3 +10,6 @@ Palpite: empresa grande fecha mais produto caro, pequena fecha mais barato.
 Testada: Caiu, produto e tamanho da empresa, nao contam para aumento de winrate, Todas as combinações entre 57% e 67%. Produto isolado: 60–65%. GTK 500 tem só 25 deals fechados, não dá pra concluir nada.
 
 
+Hipotese 3: vendedor influencia na venda
+Palpite: alguns vendedores fecham mais que outros
+Testada: Parcial , win rate ficou entre 55 e 70% , o desvio é irrelevante , gerente tambem não influencia , porem, a carga por vendedor varias bastante, isso pode importar , entra como hipótese 4
