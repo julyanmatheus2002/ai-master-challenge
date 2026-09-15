@@ -17,3 +17,8 @@ Testada: Parcial , win rate ficou entre 55 e 70% , o desvio é irrelevante , ger
 Hipotese 4: carga do vendedor influencia
 Palpite: vendedor sobrecarregado fecha menos e demora mais
 Testada: CONFIRMADA 68% de win rate com carga baixa e 59 com carga muito alta, nao da para concluir o tempo de fechamento de acordo com a sobrecarga do vendedor.
+
+
+Hipotese 5: tempo que o Deal esta aberto influencia
+Palpite: deal parado muito tempo não fecha 
+Testada: invertida. Deal que sobrevive 14 dias tem mais chance de fechar que o geral, depois de 90 dias sobe mais ainda , deal se perde em 14 dias de mediana, contra 57 de WON, mas tem um teto, nenhum deal fechou depois de 138 dias e uma grande parte de casos abertos ja passou desse numero, logo a conversão deve reduzir bastante.
