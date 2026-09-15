@@ -19,3 +19,11 @@ Valor esperado (chance × preço do produto).
 Motivo: no backtest, misturar valor no score bagunçou a ordenação do meio (Q1–Q3 fora de ordem). Separados, o vendedor vê "o que vai fechar" e "onde está o dinheiro" sem um contaminar o outro.
 
 Backtest (01/09/2017 → 31/12/2017, 893 deals): grupo quente fechou 78,9% vs 71,4% do frio, com receita 3x maior. Afinidade caiu de 19 para 8 pontos fora da amostra — ainda o maior fator.
+
+
+
+Decisão 5: Ajustes propostos pelo Claude Code na spec (aceitos)
+- Normalização por escala natural em vez de min-max (score estável, não muda quando outro deal entra)
+- Bloco "Hoje" ordenado só por valor esperado (score × valor contava chance duas vezes erro meu na spec)
+- Momentum em degraus fixos (0/14/30/60/90/120) em vez de por dia
+Origem: IA apontou, eu avaliei e aceitei os 4. Nenhum muda a lógica das hipóteses.
