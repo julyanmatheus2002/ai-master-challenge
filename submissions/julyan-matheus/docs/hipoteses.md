@@ -28,3 +28,14 @@ Hipotese 6: Deal sem conta vinculada nao fecha
 Origem: apareceu como achado lateral da H1, todos os deals fechados tinham conta 
 Palpite: deal sem conta é deal mal cadastrado ou nao trabalhado
 Testada: confirmada. 0 dos 6mil deals fechados sem conta, 68% dos abertos estao sem , conta é pre requisito e essência para o fechamento do Deal
+
+
+Hipotese 7:Vendedor × produto (sugerida pela IA, não minha)
+Origem: a IA sugeriu com base no resultado fraco da H3 e em submissões anteriores.
+Palpite: vendedor pode ser mediano no geral mas forte em produtos específicos 
+Testada: CONFIRMADA fator mais forte do dataset.
+Calculei o win rate de cada combinação vendedor + produto (mínimo 10 deals). Dividi em 4 grupos: o pior grupo fecha 54%, o melhor 73%. Diferença de 19 pontos.
+Exemplo: Niesha Huffines fecha 80% de GTX Plus Pro e 14% de GTX Pro.
+MG Advanced aparece em 6 dos 8 piores combos problema do produto, não do vendedor.
+Ressalva: combinações com poucos deals são instáveis; no score vão ser puxadas pra média do vendedor. O número real será confirmado no backtest.
+
