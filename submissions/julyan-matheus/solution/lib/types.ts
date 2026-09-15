@@ -40,6 +40,9 @@ export type Bucket = "Focar" | "Requalificar" | "Iniciar" | "Limpar";
 
 export type Tone = "positivo" | "neutro" | "alerta";
 
+/** Relative position of the deal among the same agent's Focar deals (thirds by rank). */
+export type Tier = "Top" | "Meio" | "Fundo";
+
 export interface WhyLine {
   factor: "afinidade" | "momentum" | "capacidade";
   text: string;
@@ -61,6 +64,8 @@ export interface ScoredDeal {
   daysOpen: number;
   /** 0–100 */
   score: number;
+  /** Top / Meio / Fundo do Focar do vendedor, por posição no ranking (terços). */
+  tier: Tier;
   /** 0–1, used only for expected value. */
   chance: number;
   /** chance × sales_price, in dollars. */

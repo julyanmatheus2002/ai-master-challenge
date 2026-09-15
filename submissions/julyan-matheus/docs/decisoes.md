@@ -33,3 +33,9 @@ Decisão 6: Score honesto + etiqueta relativa
 Score fica na escala real (62–78). Cada deal ganha etiqueta "Top / Meio / Fundo do seu Focar" pela posição entre os deals do vendedor.
 Motivo: esticar pra 0–100 faria um deal de 62% parecer zero. O vendedor lê o número como chance real.
 Origem: IA apontou a compressão, ofereceu esticar visualmente, eu recusei.
+
+
+Decisão 7: Requalificar ordenada por urgência; "Hoje" vazio vira instrução
+Engaging primeiro (mais recentes no topo), Prospecting depois. Quando Focar está vazio, o bloco "Hoje" diz quantos deals estão sem conta e que vincular conta é a ação do dia.
+Motivo: 9 de 27 vendedores têm Focar vazio. Tela vazia sem instrução seria inútil pra eles e são justamente os que mais precisam.
+Origem: eu vi no print do Darcel e pedi o ajuste.

@@ -3,14 +3,16 @@ import { loadDeals, loadProducts } from "./data";
 import {
   MAX_DAYS_OPEN,
   affinity,
+  assignTiers,
   buildStats,
+  byScoreDesc,
   countBuckets,
   isScored,
   referenceDate,
   scorePipeline,
   triage,
 } from "./scoring";
-import type { Deal, Product } from "./types";
+import type { Deal, Product, ScoredDeal } from "./types";
 
 const deals = loadDeals();
 const products = loadProducts();
@@ -103,5 +105,27 @@ describe("scoring — spec §9", () => {
   it("8. sanity: balde Focar tem 89 deals na data de referência", () => {
     expect(ref).toBe("2017-12-31");
     expect(countBuckets(rows).Focar).toBe(89);
+  });
+});
+
+describe("etiqueta relativa (Top / Meio / Fundo do seu Focar)", () => {
+  it("terços por posição no ranking do mesmo vendedor; ranking nunca contradiz a etiqueta", () => {
+    const byAgent = new Map<string, typeof scored>();
+    for (const s of scored) byAgent.set(s.deal.sales_agent, [...(byAgent.get(s.deal.sales_agent) ?? []), s]);
+    const order = { Top: 0, Meio: 1, Fundo: 2 };
+    for (const list of byAgent.values()) {
+      list.sort(byScoreDesc);
+      for (let i = 1; i < list.length; i++) {
+        expect(order[list[i].tier]).toBeGreaterThanOrEqual(order[list[i - 1].tier]);
+      }
+      const n = list.length;
+      expect(list.filter((s) => s.tier === "Top").length).toBe(Math.ceil(n / 3));
+    }
+  });
+
+  it("vendedor com um único deal no Focar recebe Top", () => {
+    const one: ScoredDeal[] = [{ ...scored[0], tier: "Fundo" }];
+    assignTiers(one);
+    expect(one[0].tier).toBe("Top");
   });
 });
