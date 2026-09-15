@@ -39,3 +39,10 @@ Decisão 7: Requalificar ordenada por urgência; "Hoje" vazio vira instrução
 Engaging primeiro (mais recentes no topo), Prospecting depois. Quando Focar está vazio, o bloco "Hoje" diz quantos deals estão sem conta e que vincular conta é a ação do dia.
 Motivo: 9 de 27 vendedores têm Focar vazio. Tela vazia sem instrução seria inútil pra eles e são justamente os que mais precisam.
 Origem: eu vi no print do Darcel e pedi o ajuste.
+
+
+
+Achado da Tela 2: time do Melvin Marxen (5 vendedores) inteiro com 0 em Focar; 4 de 5 do Dustin Brinkmann. Os alertas de 60% sem conta / 80% vencido quase não disparam  "0 em Focar" é o sinal mais útil. Mantive os três alertas (IA sugeriu simplificar; preferi deixar pra quando o CRM estiver mais limpo).
+
+
+
