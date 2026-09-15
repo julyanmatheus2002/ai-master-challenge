@@ -22,3 +22,9 @@ Testada: CONFIRMADA 68% de win rate com carga baixa e 59 com carga muito alta, n
 Hipotese 5: tempo que o Deal esta aberto influencia
 Palpite: deal parado muito tempo não fecha 
 Testada: invertida. Deal que sobrevive 14 dias tem mais chance de fechar que o geral, depois de 90 dias sobe mais ainda , deal se perde em 14 dias de mediana, contra 57 de WON, mas tem um teto, nenhum deal fechou depois de 138 dias e uma grande parte de casos abertos ja passou desse numero, logo a conversão deve reduzir bastante.
+
+
+Hipotese 6: Deal sem conta vinculada nao fecha
+Origem: apareceu como achado lateral da H1, todos os deals fechados tinham conta 
+Palpite: deal sem conta é deal mal cadastrado ou nao trabalhado
+Testada: confirmada. 0 dos 6mil deals fechados sem conta, 68% dos abertos estao sem , conta é pre requisito e essência para o fechamento do Deal
