@@ -113,19 +113,84 @@ describe("etiqueta relativa (Top / Meio / Fundo do seu Focar)", () => {
     const byAgent = new Map<string, typeof scored>();
     for (const s of scored) byAgent.set(s.deal.sales_agent, [...(byAgent.get(s.deal.sales_agent) ?? []), s]);
     const order = { Top: 0, Meio: 1, Fundo: 2 };
+    let checked = 0;
     for (const list of byAgent.values()) {
+      if (list.length < 3) continue; // sem etiqueta, coberto em outro teste
+      checked += 1;
       list.sort(byScoreDesc);
       for (let i = 1; i < list.length; i++) {
-        expect(order[list[i].tier]).toBeGreaterThanOrEqual(order[list[i - 1].tier]);
+        expect(order[list[i].tier!]).toBeGreaterThanOrEqual(order[list[i - 1].tier!]);
       }
       const n = list.length;
       expect(list.filter((s) => s.tier === "Top").length).toBe(Math.ceil(n / 3));
     }
+    expect(checked).toBeGreaterThan(0);
   });
 
-  it("vendedor com um único deal no Focar recebe Top", () => {
+  it("vendedor com menos de 3 deals no Focar não recebe etiqueta (null)", () => {
     const one: ScoredDeal[] = [{ ...scored[0], tier: "Fundo" }];
     assignTiers(one);
-    expect(one[0].tier).toBe("Top");
+    expect(one[0].tier).toBeNull();
+
+    const two: ScoredDeal[] = [
+      { ...scored[0], tier: "Top", deal: { ...scored[0].deal, opportunity_id: "A" } },
+      { ...scored[0], tier: "Top", deal: { ...scored[0].deal, opportunity_id: "B" } },
+    ];
+    assignTiers(two);
+    expect(two.map((s) => s.tier)).toEqual([null, null]);
+  });
+
+  it("vendedor com exatamente 3 deals recebe Top, Meio e Fundo", () => {
+    const three: ScoredDeal[] = [90, 70, 50].map((score, i) => ({
+      ...scored[0],
+      score,
+      tier: null,
+      deal: { ...scored[0].deal, opportunity_id: `D${i}` },
+    }));
+    assignTiers(three);
+    expect(three.map((s) => s.tier)).toEqual(["Top", "Meio", "Fundo"]);
+  });
+
+  it("etiqueta na base real: só null quando o vendedor tem < 3 no Focar", () => {
+    const perAgent = new Map<string, number>();
+    for (const s of scored) perAgent.set(s.deal.sales_agent, (perAgent.get(s.deal.sales_agent) ?? 0) + 1);
+    for (const s of scored) {
+      const n = perAgent.get(s.deal.sales_agent)!;
+      if (n < 3) expect(s.tier).toBeNull();
+      else expect(s.tier).not.toBeNull();
+    }
+  });
+});
+
+describe("auditoria: janela temporal em buildStats", () => {
+  it("deals fechados depois de ref não entram no histórico", () => {
+    const history: Deal[] = [
+      deal({ opportunity_id: "a", deal_stage: "Won", engage_date: "2017-01-01", close_date: "2017-02-01", close_value: 1 }),
+      deal({ opportunity_id: "b", deal_stage: "Lost", engage_date: "2017-01-01", close_date: "2017-02-01", close_value: 0 }),
+      deal({ opportunity_id: "c", deal_stage: "Won", engage_date: "2017-01-01", close_date: "2017-09-01", close_value: 1 }),
+      deal({ opportunity_id: "d", deal_stage: "Won", engage_date: "2017-01-01", close_date: "2017-09-02", close_value: 1 }),
+    ];
+    const early = buildStats(history, P, "2017-06-30");
+    expect(early.globalWinRate).toBe(0.5); // a + b only
+    const late = buildStats(history, P, "2017-12-31");
+    expect(late.globalWinRate).toBe(0.75); // all four
+  });
+
+  it("carga só conta deals abertos que já existiam em ref", () => {
+    const list: Deal[] = [
+      deal({ opportunity_id: "h", deal_stage: "Won", engage_date: "2017-01-01", close_date: "2017-02-01", close_value: 1 }),
+      deal({ opportunity_id: "e1", deal_stage: "Engaging", engage_date: "2017-05-01" }),
+      deal({ opportunity_id: "e2", deal_stage: "Engaging", engage_date: "2017-11-01" }),
+      deal({ opportunity_id: "p1", deal_stage: "Prospecting", engage_date: null }),
+    ];
+    expect(buildStats(list, P, "2017-06-30").loadByAgent.get("Ana")).toBe(2); // e1 + p1
+    expect(buildStats(list, P, "2017-12-31").loadByAgent.get("Ana")).toBe(3);
+  });
+
+  it("capacity fica em [0, 1]", () => {
+    for (const s of scored) {
+      expect(s.factors.capacity).toBeGreaterThanOrEqual(0);
+      expect(s.factors.capacity).toBeLessThanOrEqual(1);
+    }
   });
 });

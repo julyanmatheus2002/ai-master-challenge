@@ -64,8 +64,8 @@ export interface ScoredDeal {
   daysOpen: number;
   /** 0–100 */
   score: number;
-  /** Top / Meio / Fundo do Focar do vendedor, por posição no ranking (terços). */
-  tier: Tier;
+  /** Top / Meio / Fundo do Focar do vendedor, por posição no ranking (terços). Null com menos de 3 deals. */
+  tier: Tier | null;
   /** 0–1, used only for expected value. */
   chance: number;
   /** chance × sales_price, in dollars. */

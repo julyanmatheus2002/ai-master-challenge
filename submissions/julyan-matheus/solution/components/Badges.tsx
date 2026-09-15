@@ -6,7 +6,8 @@ const TIER_STYLE: Record<Tier, string> = {
   Fundo: "bg-neutral-200 text-neutral-700 ring-neutral-300",
 };
 
-export function TierBadge({ tier }: { tier: Tier }) {
+export function TierBadge({ tier }: { tier: Tier | null }) {
+  if (!tier) return <span className="text-xs text-neutral-400">—</span>;
   return (
     <span
       className={`inline-block rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${TIER_STYLE[tier]}`}

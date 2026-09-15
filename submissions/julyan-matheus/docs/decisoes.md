@@ -45,4 +45,8 @@ Origem: eu vi no print do Darcel e pedi o ajuste.
 Achado da Tela 2: time do Melvin Marxen (5 vendedores) inteiro com 0 em Focar; 4 de 5 do Dustin Brinkmann. Os alertas de 60% sem conta / 80% vencido quase não disparam  "0 em Focar" é o sinal mais útil. Mantive os três alertas (IA sugeriu simplificar; preferi deixar pra quando o CRM estiver mais limpo).
 
 
-
+Decisão 8: Auditoria independente (ChatGPT, sem contexto) — 8 pontos
+Aceitos e corrigidos: 1 e 2 (filtrar histórico e carga pela data de referência), 4 (limitar capacidade a 0–1), 8 (sem etiqueta Top/Meio/Fundo quando Focar < 3).
+Documentados como limitação: 3 (score ranqueia, não é probabilidade calibrada), 7 (cold start).
+Rejeitado: 6 (deal_stage)  só Engaging recebe score, Prospecting não tem engage_date.
+Mantido: 5 (preço de tabela no valor esperado)  dataset não tem valor do deal aberto; close_value seria leakage.

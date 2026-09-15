@@ -2,7 +2,7 @@
  * Lead Scorer — pure scoring logic. No I/O here.
  *
  * Everything is derived from the closed history (Won / Lost) and from the
- * open pipeline at a reference date. `close_date` / `close_value` of an open
+ * open pipeline at a reference date. close_date / close_value of an open
  * deal are never read (leakage guard).
  */
 import type {
@@ -85,14 +85,14 @@ function minmax(value: number, min: number, max: number): number {
   return (value - min) / (max - min);
 }
 
-const pct = (x: number) => `${Math.round(x * 100)}%`;
+const pct = (x: number) => ${Math.round(x * 100)}%;
 
 // ---------------------------------------------------------------------------
 // Triage (§4, Decisão 1) — order matters
 // ---------------------------------------------------------------------------
 
 export function triage(deal: Deal, ref: string): Bucket {
-  if (!isOpen(deal)) throw new Error(`triage: deal ${deal.opportunity_id} is not open`);
+  if (!isOpen(deal)) throw new Error(triage: deal ${deal.opportunity_id} is not open);
   const days = daysOpen(deal, ref);
   if (deal.deal_stage === "Engaging" && days !== null && days > MAX_DAYS_OPEN) return "Limpar";
   if (!deal.account) return "Requalificar";
@@ -130,7 +130,7 @@ export interface Stats {
   priceByProduct: Map<string, number>;
 }
 
-const comboKey = (agent: string, product: string) => `${agent}|${normalizeProduct(product)}`;
+const comboKey = (agent: string, product: string) => ${agent}|${normalizeProduct(product)};
 
 function bump(map: Map<string, WinCount>, key: string, won: boolean) {
   const cur = map.get(key) ?? { wins: 0, total: 0 };
@@ -149,8 +149,6 @@ export function buildStats(deals: Deal[], products: Product[], ref = referenceDa
 
   for (const d of deals) {
     if (isClosed(d)) {
-      // Only history that already existed at the reference date (no future leakage in backtests).
-      if (!d.close_date || d.close_date > ref) continue;
       const won = d.deal_stage === "Won";
       closed += 1;
       if (won) wins += 1;
@@ -160,9 +158,6 @@ export function buildStats(deals: Deal[], products: Product[], ref = referenceDa
         durations.push({ days: daysBetween(d.engage_date, d.close_date), won });
       }
     } else if (isOpen(d)) {
-      // Load = open deals that already existed at ref. Prospecting has no engage_date and is
-      // always counted (spec §5.3: Prospecting + Engaging); Engaging only if engaged by ref.
-      if (d.engage_date && d.engage_date > ref) continue;
       loadByAgent.set(d.sales_agent, (loadByAgent.get(d.sales_agent) ?? 0) + 1);
     }
   }
@@ -246,8 +241,7 @@ export interface CapacityDetail {
 export function capacity(stats: Stats, agent: string): CapacityDetail {
   const load = stats.loadByAgent.get(agent) ?? 0;
   const loadNorm = minmax(load, stats.loadMin, stats.loadMax);
-  const value = Math.min(1, Math.max(0, 1 - loadNorm));
-  return { value, load, loadNorm };
+  return { value: 1 - loadNorm, load, loadNorm };
 }
 
 // ---------------------------------------------------------------------------
@@ -289,16 +283,16 @@ export function explain(
   let affText: string;
   let affTone: Tone;
   if (aff.comboTotal === 0) {
-    affText = `Sem histórico de ${product} — usando sua média de ${pct(aff.agentWinRate)}`;
+    affText = Sem histórico de ${product} — usando sua média de ${pct(aff.agentWinRate)};
     affTone = "neutro";
   } else {
     const diff = aff.value - aff.agentWinRate;
-    const base = `Você fecha ${pct(aff.value)} de ${product} (${aff.comboTotal} deals)`;
+    const base = Você fecha ${pct(aff.value)} de ${product} (${aff.comboTotal} deals);
     if (diff >= AFFINITY_TOLERANCE) {
-      affText = `${base} — acima da sua média de ${pct(aff.agentWinRate)}`;
+      affText = ${base} — acima da sua média de ${pct(aff.agentWinRate)};
       affTone = "positivo";
     } else if (diff <= -AFFINITY_TOLERANCE) {
-      affText = `${base} — abaixo da sua média de ${pct(aff.agentWinRate)}`;
+      affText = ${base} — abaixo da sua média de ${pct(aff.agentWinRate)};
       affTone = "alerta";
     } else {
       affText = base;
@@ -310,13 +304,13 @@ export function explain(
   let momText: string;
   let momTone: Tone;
   if (days >= 120) {
-    momText = `Aberto há ${days} dias — perto do limite de ${MAX_DAYS_OPEN}`;
+    momText = Aberto há ${days} dias — perto do limite de ${MAX_DAYS_OPEN};
     momTone = "alerta";
   } else if (mom.value > stats.globalWinRate + 0.01) {
-    momText = `Aberto há ${days} dias — deals que chegam aqui fecham ${pct(mom.value)}`;
+    momText = Aberto há ${days} dias — deals que chegam aqui fecham ${pct(mom.value)};
     momTone = "positivo";
   } else {
-    momText = `Aberto há ${days} dias — chance histórica de ${pct(mom.value)}`;
+    momText = Aberto há ${days} dias — chance histórica de ${pct(mom.value)};
     momTone = "neutro";
   }
 
@@ -325,13 +319,13 @@ export function explain(
   let capText: string;
   let capTone: Tone;
   if (cap.load < stats.loadMean) {
-    capText = `Você tem ${cap.load} deals abertos — abaixo da média (${mean})`;
+    capText = Você tem ${cap.load} deals abertos — abaixo da média (${mean});
     capTone = "positivo";
   } else if (cap.load > stats.loadMean * 1.25) {
-    capText = `Você tem ${cap.load} abertos — priorize`;
+    capText = Você tem ${cap.load} abertos — priorize;
     capTone = "alerta";
   } else {
-    capText = `Você tem ${cap.load} deals abertos — na média (${mean})`;
+    capText = Você tem ${cap.load} deals abertos — na média (${mean});
     capTone = "neutro";
   }
 
@@ -348,7 +342,7 @@ export function explain(
 
 export function scoreDeal(deal: Deal, stats: Stats): ScoredDeal {
   const days = daysOpen(deal, stats.ref);
-  if (days === null) throw new Error(`scoreDeal: deal ${deal.opportunity_id} has no engage_date`);
+  if (days === null) throw new Error(scoreDeal: deal ${deal.opportunity_id} has no engage_date);
   const aff = affinity(stats, deal.sales_agent, deal.product);
   const mom = momentum(stats, days);
   const cap = capacity(stats, deal.sales_agent);
@@ -360,7 +354,7 @@ export function scoreDeal(deal: Deal, stats: Stats): ScoredDeal {
     bucket: "Focar",
     daysOpen: days,
     score: computeScore(factors),
-    tier: null, // set by assignTiers once the agent's Focar is known
+    tier: "Top", // overwritten by assignTiers once the agent's Focar is known
     chance,
     expectedValue: Math.round(chance * price),
     factors,
@@ -373,10 +367,7 @@ export function byScoreDesc(a: ScoredDeal, b: ScoredDeal): number {
   return b.score - a.score || b.expectedValue - a.expectedValue || a.deal.opportunity_id.localeCompare(b.deal.opportunity_id);
 }
 
-/** Below this many Focar deals the relative label is meaningless, so it is left null. */
-export const TIER_MIN_DEALS = 3;
-
-/** Tier = third of the ranking among the same agent's Focar deals. Mutates `tier` in place. */
+/** Tier = third of the ranking among the same agent's Focar deals. Mutates tier in place. */
 export function assignTiers(scored: ScoredDeal[]): void {
   const byAgent = new Map<string, ScoredDeal[]>();
   for (const s of scored) {
@@ -387,10 +378,6 @@ export function assignTiers(scored: ScoredDeal[]): void {
   for (const list of byAgent.values()) {
     list.sort(byScoreDesc);
     const n = list.length;
-    if (n < TIER_MIN_DEALS) {
-      for (const s of list) s.tier = null;
-      continue;
-    }
     list.forEach((s, i) => {
       const pos = i / n;
       const tier: Tier = pos < 1 / 3 ? "Top" : pos < 2 / 3 ? "Meio" : "Fundo";
@@ -432,3 +419,97 @@ export function todayPicks(rows: PipelineRow[], n = 3): ScoredDeal[] {
     .sort((a, b) => b.expectedValue - a.expectedValue || b.score - a.score)
     .slice(0, n);
 }
+
+
+
+
+
+
+Você é um revisor técnico cético. Abaixo está o código de um lead scorer para um CRM de vendas (dataset: pipeline com deal_stage, engage_date, close_date, close_value; produtos com preço; vendedores). Não te dei as conclusões do autor de propósito.
+
+Encontre problemas reais: bugs de lógica, leakage (uso de informação que só existe depois do fechamento), divisão por zero, casos de borda mal tratados, pesos que não fazem sentido, ou qualquer coisa que faria o score enganar um vendedor. Seja específico: função, o que está errado, e como corrigir. Se algo está certo, não elogie — só liste problemas. No máximo 8 pontos, ordenados por gravidade.
+[Crítico] buildStats() tem leakage temporal quando ref é informado
+Função: buildStats
+O ref pode ser, por exemplo, 2026-06-30, mas o loop inclui todos os deals fechados do dataset, inclusive os com close_date > ref.
+Isso contamina globalWinRate, byAgent, byAgentProduct e momentumCurve com informação do futuro.
+Pior: o comentário diz que o pipeline é calculado “at a reference date”, mas isso só é verdade quando ref coincide com a data máxima do dataset.
+
+Correção: ao construir as estatísticas, considerar apenas:
+
+if (isClosed(d) && d.close_date && d.close_date <= ref) {
+  // usar no histórico
+}
+
+E, para o pipeline, considerar apenas deals que já existiam em ref.
+
+[Crítico] loadByAgent também não é realmente “at the reference date”
+Função: buildStats
+Todo deal aberto no dataset entra na carga, independentemente de quando ele entrou no pipeline.
+Se você fizer backtest em uma data passada, um deal aberto depois dessa data aumenta a carga do vendedor retroativamente.
+Isso afeta diretamente capacity, computeScore() e computeChance().
+
+Correção: filtrar os abertos para os que já existiam em ref, usando o timestamp disponível de criação/entrada no pipeline. Se engage_date for a melhor aproximação disponível:
+
+if (isOpen(d) && d.engage_date && d.engage_date <= ref)
+[Crítico] chance não é uma probabilidade calibrada, embora seja apresentada como “chance”
+Função: computeChance
+
+A fórmula mistura três scores arbitrários e chama o resultado de chance:
+
+0.5 * affinity + 0.3 * momentum + 0.2 * capTerm
+
+Isso não significa que um deal com chance = 0.70 tenha 70% de probabilidade de ganhar.
+
+Não há nenhuma etapa que compare as chances previstas com os resultados reais para calibrá-las.
+Isso é especialmente perigoso porque expectedValue = chance * price transforma uma métrica não calibrada em dinheiro.
+Correção: ou chamar isso de priorityProbability/propensityScore, ou calibrar a saída contra histórico separado de treino/validação e só então tratá-la como probabilidade. Modelos de scoring precisam ser avaliados por calibração, não apenas ranking.
+[Alto] capacity() pode dar capacidade artificialmente alta/baixa por causa da população usada no min-max
+Função: capacity
+
+loadMin e loadMax são calculados somente entre vendedores que possuem pelo menos um deal aberto:
+
+const loads = [...loadByAgent.values()];
+Um vendedor com zero deals simplesmente desaparece da distribuição.
+Isso faz o significado de capacity = 1 - minmax(load) depender de quem atualmente tem pipeline, e não da capacidade real do time.
+Além disso, se no futuro capacity() for chamado para um vendedor fora do mapa, ele recebe load = 0, que pode ficar abaixo de loadMin, produzindo loadNorm < 0 e portanto capacity > 1.
+
+Correção: construir a carga usando uma lista explícita de vendedores do CRM, incluindo zeros, e limitar:
+
+const loadNorm = Math.min(1, Math.max(0, minmax(...)));
+[Alto] O expectedValue usa preço de catálogo, não valor econômico do deal
+Função: scoreDeal
+
+Você recebe close_value no dataset, mas para deals abertos ele não é usado — o que é correto para evitar leakage. O problema é o substituto:
+
+const price = stats.priceByProduct.get(product) ?? 0;
+Isso assume que todo deal de um produto vale exatamente sales_price.
+Se houver quantidade, desconto, negociação, mix ou ticket diferente, dois deals com a mesma probabilidade terão o mesmo EV, mesmo podendo valer valores completamente diferentes.
+E quando o produto não está em products, o EV vira zero, potencialmente mandando um deal importante para baixo.
+Correção: ter um deal_value/open_value disponível no momento do scoring ou estimar ticket histórico por produto/segmento, com fallback explícito — nunca simplesmente 0.
+[Alto] O score ignora o próprio deal_stage depois da triagem
+Funções: triage, scoreDeal
+Prospecting vira Iniciar; Engaging vira Focar. Depois disso, todo Focar é tratado pelo mesmo modelo.
+O estágio é provavelmente um dos sinais mais fortes de probabilidade de fechamento, mas desaparece do score.
+Mais problemático: momentum usa apenas idade do deal, então dois deals Engaging com mesma idade são equivalentes mesmo que o CRM tenha outros estados relevantes dentro do processo.
+Correção: se deal_stage contém informação real de avanço, incorporá-la ao modelo ou construir modelos separados por estágio. A validação deve verificar se os tiers realmente apresentam lift histórico.
+[Médio] O tratamento de cold start pode produzir scores absurdamente baixos
+Funções: referenceDate, buildStats, affinity
+
+Se não houver nenhum closed deal:
+
+referenceDate(deals)
+
+simplesmente lança erro.
+
+Mesmo passando ref manualmente, globalWinRate = 0. Um vendedor sem histórico também recebe afinidade 0; momentum vira 0; e o score praticamente colapsa.
+Isso significa que um CRM novo ou um vendedor novo não é apenas “incerto”: o sistema interpreta ausência de informação como probabilidade de fracasso.
+Correção: definir um prior/base rate inicial, por exemplo uma taxa global configurável, e usar shrinkage também no nível global quando a amostra for pequena.
+[Médio] assignTiers() força exatamente três faixas mesmo quando há pouquíssimos deals
+Função: assignTiers
+Com 1 deal → Top.
+Com 2 → Top, Meio; nunca existe Fundo.
+Com 3 → um em cada.
+Com 4 → 2 Top, 1 Meio, 1 Fundo.
+Ou seja, “Top / Meio / Fundo” não representa níveis estatisticamente diferentes; representa apenas posição relativa dentro de uma amostra que pode ser minúscula.
+Um vendedor com 2 oportunidades terá uma “Top” mesmo que o score seja ruim.
+Correção: exigir mínimo de deals para tiers, ou usar thresholds absolutos/percentis globais. E validar se os tiers realmente possuem taxas de fechamento crescentes antes de apresentá-los como prioridade.
