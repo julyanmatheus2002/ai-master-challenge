@@ -13,3 +13,7 @@ Testada: Caiu, produto e tamanho da empresa, nao contam para aumento de winrate,
 Hipotese 3: vendedor influencia na venda
 Palpite: alguns vendedores fecham mais que outros
 Testada: Parcial , win rate ficou entre 55 e 70% , o desvio é irrelevante , gerente tambem não influencia , porem, a carga por vendedor varias bastante, isso pode importar , entra como hipótese 4
+
+Hipotese 4: carga do vendedor influencia
+Palpite: vendedor sobrecarregado fecha menos e demora mais
+Testada: CONFIRMADA 68% de win rate com carga baixa e 59 com carga muito alta, nao da para concluir o tempo de fechamento de acordo com a sobrecarga do vendedor.
